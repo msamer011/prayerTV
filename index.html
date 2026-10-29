@@ -1,0 +1,1227 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>مواقيت الصلاة للشاشات الذكية | Smart TV Prayer Times</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Cairo & Amiri for Quranic/Islamic Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-deep: #031310;
+            --bg-emerald: #07231d;
+            --gold-primary: #d4af37;
+            --gold-light: #f9e596;
+            --gold-glow: rgba(212, 175, 55, 0.55);
+            --emerald-glow: rgba(16, 185, 129, 0.35);
+        }
+
+        * {
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: var(--bg-deep);
+            color: #f8fafc;
+            margin: 0;
+            padding: 0;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .font-quran {
+            font-family: 'Amiri', serif;
+        }
+
+        /* Luxury Islamic Geometric Background */
+        .islamic-bg {
+            background: 
+                radial-gradient(circle at 80% 15%, rgba(16, 185, 129, 0.14) 0%, transparent 45%),
+                radial-gradient(circle at 20% 85%, rgba(212, 175, 55, 0.12) 0%, transparent 50%),
+                linear-gradient(135deg, #020d0b 0%, #06211b 50%, #031310 100%);
+        }
+
+        .islamic-pattern-overlay {
+            background-image: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23d4af37' stroke-width='0.6' stroke-opacity='0.08'%3E%3Cpath d='M40 0L50 30L80 40L50 50L40 80L30 50L0 40L30 30Z'/%3E%3Ccircle cx='40' cy='40' r='18'/%3E%3Cpath d='M0 0L25 25M80 0L55 25M0 80L25 55M80 80L55 55'/%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        /* Glassmorphism Cards for TV */
+        .tv-card {
+            background: linear-gradient(160deg, rgba(10, 41, 34, 0.85) 0%, rgba(4, 22, 18, 0.92) 100%);
+            border: 1px solid rgba(212, 175, 55, 0.22);
+            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.6);
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* Smart TV Remote Focus Ring (High Visibility from 3 meters) */
+        .tv-focusable {
+            outline: none;
+            position: relative;
+            transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease, background-color 0.22s ease;
+        }
+
+        .tv-focusable.tv-focused {
+            transform: scale(1.035);
+            border-color: #f9e596 !important;
+            box-shadow: 0 0 0 3px #d4af37, 0 0 28px rgba(212, 175, 55, 0.75) !important;
+            z-index: 30;
+        }
+
+        /* Active / Upcoming Prayer Highlight */
+        .next-prayer-card {
+            background: linear-gradient(145deg, rgba(18, 78, 63, 0.95) 0%, rgba(8, 38, 31, 0.98) 100%);
+            border: 2px solid #d4af37;
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.3), inset 0 0 20px rgba(212, 175, 55, 0.12);
+        }
+
+        /* Gold Shimmer Text */
+        .gold-gradient-text {
+            background: linear-gradient(to bottom, #fff6d1 0%, #d4af37 65%, #aa821c 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Tabular Numbers for Smooth Clock/Countdown without jitter */
+        .tabular-nums {
+            font-variant-numeric: tabular-nums;
+            font-feature-settings: "tnum";
+        }
+
+        /* Pulse Animation for Live Indicators */
+        @keyframes softPulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.45; transform: scale(0.94); }
+        }
+        .animate-soft-pulse {
+            animation: softPulse 2.2s infinite ease-in-out;
+        }
+
+        /* Night Dimmer Overlay */
+        #nightDimmerOverlay {
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+
+        /* Responsive fallback for smaller test screens */
+        @media (max-height: 700px), (max-width: 1024px) {
+            body {
+                overflow-y: auto;
+                height: auto;
+                min-height: 100vh;
+            }
+        }
+    </style>
+</head>
+<body class="islamic-bg select-none">
+    <!-- Subtle Geometric Pattern Layer -->
+    <div class="islamic-pattern-overlay fixed inset-0 pointer-events-none"></div>
+
+    <!-- Night Mode / Screen Burn-in Protection Dimmer Layer -->
+    <div id="nightDimmerOverlay" class="fixed inset-0 bg-black opacity-0 z-40"></div>
+
+    <!-- Main 10-Foot TV Container -->
+    <div class="relative z-10 w-full h-full flex flex-col justify-between px-6 py-4 lg:px-10 lg:py-6 max-w-[1920px] mx-auto">
+
+        <!-- ================= TOP BAR (HEADER & CONTROLS) ================= -->
+        <header class="tv-card rounded-2xl px-5 py-3.5 flex flex-wrap lg:flex-nowrap items-center justify-between gap-4 border-b-2 border-amber-500/30">
+            
+            <!-- Right Side: Brand & City Selector -->
+            <div class="flex items-center gap-4 flex-wrap">
+                <!-- Mosque Emblem -->
+                <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-500/25 to-emerald-900/60 border border-amber-400/40 flex items-center justify-center shadow-inner shrink-0">
+                    <svg class="w-9 h-9 text-amber-300" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.2">
+                        <path d="M32 6C32 6 20 18 20 28C20 33 23 36 23 36H41C41 36 44 33 44 28C44 18 32 6 32 6Z" fill="rgba(212,175,55,0.2)"/>
+                        <path d="M32 2V6M12 36H52V56H12V36Z"/>
+                        <path d="M26 56V45C26 41.6863 28.6863 39 32 39C35.3137 39 38 41.6863 38 45V56"/>
+                        <path d="M8 56V24L12 18L16 24V56M48 56V24L52 18L56 24V56"/>
+                        <path d="M4 56H60"/>
+                    </svg>
+                </div>
+
+                <div>
+                    <div class="flex items-center gap-2">
+                        <h1 class="text-xl lg:text-2xl font-extrabold tracking-wide gold-gradient-text">مواقيت الصلاة</h1>
+                        <span id="connectionBadge" class="text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-semibold">
+                            متصل • هيئة المساحة المصرية
+                        </span>
+                    </div>
+                    <p class="text-xs lg:text-sm text-emerald-200/75 mt-0.5" id="fullDateDisplay">
+                        جاري تحميل التاريخ الهجري والميلادي...
+                    </p>
+                </div>
+
+                <!-- Interactive Control Buttons (Row 0 in Remote Navigation) -->
+                <div class="flex items-center gap-2.5 mr-2 flex-wrap">
+                    <!-- City Selector Modal Button -->
+                    <button id="btnCityModal" data-focusable="true" data-row="0" data-col="0"
+                        onclick="openCityModal()"
+                        class="tv-focusable flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-emerald-950/90 hover:bg-emerald-900 border border-amber-400/40 text-amber-200 font-bold text-sm lg:text-base cursor-pointer">
+                        <svg class="w-5 h-5 text-amber-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        </svg>
+                        <span>المدينة:</span>
+                        <span id="currentCityName" class="text-white font-black underline decoration-amber-400/60 underline-offset-4">كفر الشيخ</span>
+                    </button>
+
+                    <!-- Sound Toggle Button -->
+                    <button id="btnAudioToggle" data-focusable="true" data-row="0" data-col="1"
+                        onclick="toggleAudioAlert()"
+                        class="tv-focusable flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-emerald-950/80 hover:bg-emerald-900 border border-emerald-600/40 text-emerald-100 font-semibold text-sm lg:text-base cursor-pointer">
+                        <span id="audioIconContainer" class="text-amber-400">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
+                            </svg>
+                        </span>
+                        <span id="audioStatusText">التنبيه: مفعل</span>
+                    </button>
+
+                    <!-- Test Adhan Chime Button -->
+                    <button id="btnTestAdhan" data-focusable="true" data-row="0" data-col="2"
+                        onclick="triggerAdhanPreview()"
+                        class="tv-focusable flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 border border-amber-400/40 text-amber-200 font-semibold text-sm lg:text-base cursor-pointer">
+                        <svg class="w-5 h-5 text-amber-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        <span>تجربة النداء</span>
+                    </button>
+
+                    <!-- Night Dimmer Toggle -->
+                    <button id="btnNightDimmer" data-focusable="true" data-row="0" data-col="3"
+                        onclick="cycleNightDimmer()"
+                        class="tv-focusable flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-emerald-950/80 hover:bg-emerald-900 border border-emerald-600/40 text-emerald-100 font-semibold text-sm lg:text-base cursor-pointer">
+                        <svg class="w-5 h-5 text-amber-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+                        </svg>
+                        <span id="dimmerStatusText">إضاءة: 100%</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Left Side: Huge Live Digital TV Clock -->
+            <div class="flex items-center gap-3 bg-black/40 px-5 py-2 rounded-2xl border border-amber-500/25">
+                <div class="text-left dir-ltr flex items-baseline gap-2">
+                    <span id="liveClockTime" class="text-3xl lg:text-5xl font-black tracking-wider text-white tabular-nums">12:00</span>
+                    <span id="liveClockSeconds" class="text-lg lg:text-2xl font-bold text-amber-400 tabular-nums">:00</span>
+                    <span id="liveClockPeriod" class="text-base lg:text-xl font-bold text-emerald-300 mr-1">م</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- ================= CENTER HERO SECTION ================= -->
+        <main class="grid grid-cols-1 lg:grid-cols-12 gap-5 my-auto py-2">
+            
+            <!-- Right Hero Card (7 Cols): Next Prayer Countdown & Progress -->
+            <section class="lg:col-span-7 tv-card rounded-3xl p-6 lg:p-8 flex flex-col justify-between relative overflow-hidden border-2 border-amber-400/35">
+                <!-- Decorative Corner Arch SVG -->
+                <svg class="absolute -left-10 -bottom-10 w-64 h-64 text-amber-400/5 pointer-events-none" viewBox="0 0 200 200" fill="currentColor">
+                    <path d="M100 0L130 70L200 100L130 130L100 200L70 130L0 100L70 70Z"/>
+                </svg>
+
+                <div class="flex items-center justify-between flex-wrap gap-3">
+                    <div class="flex items-center gap-3">
+                        <span class="w-3.5 h-3.5 rounded-full bg-amber-400 animate-soft-pulse shadow-[0_0_12px_#d4af37]"></span>
+                        <span id="upcomingLabel" class="text-base lg:text-xl font-bold text-amber-300 tracking-wide">الصلاة القادمة</span>
+                    </div>
+                    <div id="iqamahStatusBadge" class="px-4 py-1 rounded-full bg-amber-500/15 border border-amber-400/30 text-amber-200 text-sm lg:text-base font-semibold">
+                        حي على الصلاة • حي على الفلاح
+                    </div>
+                </div>
+
+                <!-- Main Prayer Name & Big Countdown -->
+                <div class="my-4 lg:my-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div>
+                        <div class="flex items-baseline gap-4">
+                            <h2 id="nextPrayerName" class="text-4xl lg:text-6xl font-black gold-gradient-text">الفجر</h2>
+                            <span id="nextPrayerTimeFormatted" class="text-xl lg:text-3xl font-bold text-emerald-200 tabular-nums">04:55 ص</span>
+                        </div>
+                        <p id="nextPrayerSubtitle" class="text-sm lg:text-lg text-emerald-100/75 mt-2">
+                            الوقت المتبقي لرفع الأذان حسب التوقيت المحلي لمدينة <span id="heroCityLabel" class="text-amber-300 font-bold">كفر الشيخ</span>
+                        </p>
+                    </div>
+
+                    <!-- Countdown Box -->
+                    <div class="bg-black/45 border-2 border-amber-400/40 rounded-2xl px-6 py-4 text-center shadow-[0_0_25px_rgba(0,0,0,0.5)]">
+                        <span class="block text-xs lg:text-sm text-amber-200/80 font-semibold mb-1">يتبقى على الأذان</span>
+                        <div id="countdownTimer" class="text-3xl lg:text-5xl font-black text-white tracking-widest tabular-nums" dir="ltr">
+                            00:00:00
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Visual Progress Bar Between Previous & Next Prayer -->
+                <div class="mt-2">
+                    <div class="flex justify-between text-xs lg:text-sm text-emerald-200/80 font-semibold mb-2">
+                        <span id="prevPrayerProgressLabel">الصلاة السابقة: العشاء</span>
+                        <span id="progressPercentageLabel" class="text-amber-300 tabular-nums">0%</span>
+                    </div>
+                    <div class="w-full h-3.5 bg-emerald-950 rounded-full overflow-hidden border border-amber-500/25 p-0.5">
+                        <div id="prayerProgressBar" class="h-full rounded-full bg-gradient-to-l from-amber-300 via-amber-500 to-emerald-500 transition-all duration-1000" style="width: 45%"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Left Hero Card (5 Cols): Daily Dhikr & Quranic Verses (Interactive) -->
+            <section class="lg:col-span-5 tv-card rounded-3xl p-6 lg:p-7 flex flex-col justify-between relative overflow-hidden">
+                <div class="flex items-center justify-between border-b border-amber-500/20 pb-3">
+                    <div class="flex items-center gap-2.5">
+                        <svg class="w-6 h-6 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                        </svg>
+                        <h3 class="text-lg lg:text-xl font-bold text-amber-300">نفحات إيمانية وأذكار</h3>
+                    </div>
+                    <span id="dhikrCategoryBadge" class="text-xs px-3 py-1 rounded-full bg-emerald-900/90 text-emerald-200 border border-emerald-500/30">
+                        أذكار اليوم والليلة
+                    </span>
+                </div>
+
+                <!-- Quranic / Dhikr Text Container -->
+                <div class="my-auto py-4 text-center px-2">
+                    <p id="dhikrContentText" class="font-quran text-2xl lg:text-3xl leading-relaxed text-white font-bold transition-opacity duration-500">
+                        ﴿ إِنَّ الصَّلَاةَ كَانَتْ عَلَى الْمُؤْمِنِينَ كِتَابًا مَوْقُوتًا ﴾
+                    </p>
+                    <p id="dhikrReferenceText" class="text-xs lg:text-sm text-amber-300/90 font-semibold mt-3">
+                        سورة النساء - آية 103
+                    </p>
+                </div>
+
+                <!-- Dhikr Controls (Row 1 in Remote Navigation) -->
+                <div class="flex items-center justify-between gap-3 pt-3 border-t border-amber-500/20">
+                    <button id="btnPrevDhikr" data-focusable="true" data-row="1" data-col="0"
+                        onclick="changeDhikr(-1)"
+                        class="tv-focusable flex-1 py-2 px-3 rounded-xl bg-emerald-950/90 hover:bg-emerald-900 border border-amber-500/30 text-amber-200 text-sm font-bold flex items-center justify-center gap-1.5 cursor-pointer">
+                        <span>السابق</span>
+                    </button>
+                    <div id="dhikrDots" class="flex items-center gap-1.5 px-2">
+                        <!-- Dots populated via JS -->
+                    </div>
+                    <button id="btnNextDhikr" data-focusable="true" data-row="1" data-col="1"
+                        onclick="changeDhikr(1)"
+                        class="tv-focusable flex-1 py-2 px-3 rounded-xl bg-emerald-950/90 hover:bg-emerald-900 border border-amber-500/30 text-amber-200 text-sm font-bold flex items-center justify-center gap-1.5 cursor-pointer">
+                        <span>الذكر التالي</span>
+                    </button>
+                </div>
+            </section>
+        </main>
+
+        <!-- ================= PRAYER TIMES 6-CARD GRID (ROW 2) ================= -->
+        <section aria-label="جدول مواقيت الصلاة" class="my-1">
+            <div id="prayerCardsGrid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3.5 lg:gap-4">
+                <!-- Populated dynamically by JavaScript with Row=2, Col=0..5 for Remote Navigation -->
+            </div>
+        </section>
+
+        <!-- ================= BOTTOM REMOTE CONTROL GUIDE BAR ================= -->
+        <footer class="tv-card rounded-xl px-5 py-2.5 mt-2 flex flex-wrap items-center justify-between gap-3 text-xs lg:text-sm text-emerald-200/80">
+            <div class="flex items-center gap-5 flex-wrap">
+                <div class="flex items-center gap-2">
+                    <span class="px-2 py-0.5 rounded bg-amber-500/20 border border-amber-400/40 text-amber-300 font-bold">◀ ▲ ▼ ▶</span>
+                    <span>أسهم الريموت للتنقل</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="px-2.5 py-0.5 rounded bg-amber-500/20 border border-amber-400/40 text-amber-300 font-bold">OK</span>
+                    <span>لاختيار العنصر أو عرض تفاصيل الصلاة</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="w-3 h-3 rounded-full bg-emerald-500 inline-block"></span>
+                    <span>اضغط على أي صلاة لعرض السنن الرواتب وفضلها</span>
+                </div>
+            </div>
+            <div class="text-amber-300/90 font-semibold">
+                مخصص لشاشات TORNADO Smart TV • يعمل تلقائياً طوال اليوم
+            </div>
+        </footer>
+    </div>
+
+    <!-- ================= MODAL 1: CITY SELECTOR MODAL ================= -->
+    <div id="cityModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden items-center justify-center p-6">
+        <div class="tv-card rounded-3xl max-w-4xl w-full p-6 lg:p-8 border-2 border-amber-400/60 shadow-2xl">
+            <div class="flex items-center justify-between border-b border-amber-500/30 pb-4 mb-6">
+                <div>
+                    <h2 class="text-2xl lg:text-3xl font-black gold-gradient-text">اختيار المدينة والموقع الجغرافي</h2>
+                    <p class="text-sm lg:text-base text-emerald-200/80 mt-1">اختر مدينتك بالأسهم في الريموت ثم اضغط زر (OK)</p>
+                </div>
+                <button id="btnCloseCityModal" onclick="closeCityModal()"
+                    class="tv-focusable px-4 py-2 rounded-xl bg-red-500/20 border border-red-400/40 text-red-200 font-bold text-base cursor-pointer">
+                    إغلاق (Back)
+                </button>
+            </div>
+
+            <!-- Cities Grid -->
+            <div id="citiesModalGrid" class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                <!-- Populated dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= MODAL 2: PRAYER DETAILS & ADHAN OVERLAY MODAL ================= -->
+    <div id="prayerDetailModal" class="fixed inset-0 bg-black/85 backdrop-blur-md z-50 hidden items-center justify-center p-6">
+        <div class="tv-card rounded-3xl max-w-2xl w-full p-8 border-2 border-amber-400 shadow-[0_0_60px_rgba(212,175,55,0.4)] text-center">
+            <div class="w-20 h-20 mx-auto mb-4 rounded-full bg-amber-500/20 border-2 border-amber-400 flex items-center justify-center">
+                <svg class="w-11 h-11 text-amber-300" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <path d="M32 6C32 6 20 18 20 28C20 33 23 36 23 36H41C41 36 44 33 44 28C44 18 32 6 32 6Z"/>
+                    <path d="M12 36H52V56H12V36Z"/>
+                </svg>
+            </div>
+            <span id="modalBadge" class="px-4 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-400/40 text-sm font-bold">
+                تفاصيل الصلاة والسنن الرواتب
+            </span>
+            <h3 id="modalPrayerTitle" class="text-4xl font-black gold-gradient-text mt-3">صلاة الفجر</h3>
+            <p id="modalPrayerTime" class="text-3xl font-bold text-white mt-2 tabular-nums">04:55 ص</p>
+            
+            <div class="my-6 p-5 rounded-2xl bg-emerald-950/90 border border-amber-400/30 text-right space-y-3">
+                <div class="flex items-center justify-between border-b border-emerald-800 pb-2">
+                    <span class="text-emerald-300 font-semibold">عدد ركعات الفرض:</span>
+                    <span id="modalFardRakats" class="text-white font-bold text-lg">ركعتان جهريتان</span>
+                </div>
+                <div class="flex items-center justify-between border-b border-emerald-800 pb-2">
+                    <span class="text-emerald-300 font-semibold">السنن الرواتب المؤكدة:</span>
+                    <span id="modalSunnahRakats" class="text-amber-300 font-bold text-lg">ركعتان قبل الفرض</span>
+                </div>
+                <div class="pt-1">
+                    <span class="text-emerald-300 font-semibold block mb-1">فضل الصلاة:</span>
+                    <p id="modalVirtueText" class="text-emerald-100 text-base leading-relaxed font-quran text-xl">
+                        قال رسول الله ﷺ: «ركعتا الفجر خيرٌ من الدنيا وما فيها».
+                    </p>
+                </div>
+            </div>
+
+            <button id="btnCloseDetailModal" onclick="closePrayerDetailModal()"
+                class="tv-focusable w-full py-3.5 rounded-2xl bg-gradient-to-r from-amber-600 to-amber-500 text-slate-950 font-black text-lg shadow-lg cursor-pointer">
+                حسناً • العودة للشاشة الرئيسية (OK)
+            </button>
+        </div>
+    </div>
+
+    <script>
+        /********************************************************************
+         * 1. CITIES CONFIGURATION & PRAYER METADATA
+         ********************************************************************/
+        const CITIES = [
+            { id: 'kafr_elsheikh', name: 'كفر الشيخ', region: 'مصر • الدلتا', lat: 31.1107, lng: 30.9388, method: 5, tz: 2 },
+            { id: 'qallin', name: 'قلين', region: 'كفر الشيخ • مصر', lat: 31.0458, lng: 30.8542, method: 5, tz: 2 },
+            { id: 'alexandria', name: 'الإسكندرية', region: 'مصر • الساحل الشمالي', lat: 31.2001, lng: 29.9187, method: 5, tz: 2 },
+            { id: 'cairo', name: 'القاهرة', region: 'عاصمة جمهورية مصر العربية', lat: 30.0444, lng: 31.2357, method: 5, tz: 2 },
+            { id: 'mansoura', name: 'المنصورة', region: 'الدقهلية • مصر', lat: 31.0409, lng: 31.3785, method: 5, tz: 2 },
+            { id: 'tanta', name: 'طنطا', region: 'الغربية • مصر', lat: 30.7865, lng: 31.0004, method: 5, tz: 2 },
+            { id: 'aswan', name: 'أسوان', region: 'صعيد مصر', lat: 24.0889, lng: 32.8998, method: 5, tz: 2 },
+            { id: 'mecca', name: 'مكة المكرمة', region: 'المملكة العربية السعودية', lat: 21.3891, lng: 39.8579, method: 4, tz: 3 }
+        ];
+
+        const PRAYER_META = [
+            {
+                key: 'Fajr',
+                name: 'الفجر',
+                fard: 'ركعتان (جهرية)',
+                sunnah: 'ركعتان قبل الفرض (سنة الفجر)',
+                virtue: 'قال رسول الله ﷺ: «مَن صلَّى البردين دخل الجنة» وقال ﷺ: «ركعتا الفجر خيرٌ من الدنيا وما فيها».',
+                icon: `<svg class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v2m-6.36 1.64l1.42 1.42M18.36 6.64l-1.42 1.42M3 17h18M5 21h14M7 17a5 5 0 0110 0"/></svg>`
+            },
+            {
+                key: 'Sunrise',
+                name: 'الشروق',
+                fard: 'انتهاء وقت الفجر (صلاة الضحى بعده بـ 15 دقيقة)',
+                sunnah: 'صلاة الضحى (ركعتان إلى ثماني ركعات)',
+                virtue: 'قال رسول الله ﷺ: «يُصبح على كل سُلامى من أحدكم صدقة... ويجزئ من ذلك ركعتان يركعهما من الضحى».',
+                icon: `<svg class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="13" r="4"/><path d="M12 3v3m0 0l-2.5 2.5M12 6l2.5 2.5M3 18h18M5 21h14"/></svg>`
+            },
+            {
+                key: 'Dhuhr',
+                name: 'الظهر',
+                fard: '4 ركعات (سرية)',
+                sunnah: '4 ركعات قبل الفرض وركعتان بعده',
+                virtue: 'قال رسول الله ﷺ: «مَن حافظ على أربع ركعات قبل الظهر وأربع بعدها حرَّمه الله على النار».',
+                icon: `<svg class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="5"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41m11.32-11.32l1.41-1.41"/></svg>`
+            },
+            {
+                key: 'Asr',
+                name: 'العصر',
+                fard: '4 ركعات (سرية)',
+                sunnah: '4 ركعات قبل الفرض (سنة غير مؤكدة مستحبة)',
+                virtue: 'قال رسول الله ﷺ: «رحم الله امرأً صلَّى قبل العصر أربعاً» وقال تعالى: ﴿حَافِظُوا عَلَى الصَّلَوَاتِ وَالصَّلَاةِ الْوُسْطَىٰ﴾.',
+                icon: `<svg class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="10" cy="10" r="4"/><path d="M10 3v1m0 12v1m-7-7h1m12 0h1m-2.5 5.5H21M14 20h7"/></svg>`
+            },
+            {
+                key: 'Maghrib',
+                name: 'المغرب',
+                fard: '3 ركعات (أول ركعتين جهرية)',
+                sunnah: 'ركعتان بعد الفرض',
+                virtue: 'من السنن الرواتب الاثنتي عشرة التي يبني الله لمن واظب عليها بيتاً في الجنة.',
+                icon: `<svg class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 17h18M5 21h14M7 17a5 5 0 0110 0"/><path d="M12 9V4m0 5l-2.5-2.5M12 9l2.5-2.5"/></svg>`
+            },
+            {
+                key: 'Isha',
+                name: 'العشاء',
+                fard: '4 ركعات (أول ركعتين جهرية)',
+                sunnah: 'ركعتان بعد الفرض + صلاة الوتر',
+                virtue: 'قال رسول الله ﷺ: «مَن صلَّى العشاء في جماعة فكأنما قام نصف الليل، ومَن صلَّى الصبح في جماعة فكأنما صلَّى الليل كله».',
+                icon: `<svg class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/><path d="M17 4l.5 1.5L19 6l-1.5.5L17 8l-.5-1.5L15 6l1.5-.5L17 4z"/></svg>`
+            }
+        ];
+
+        const DHIKR_LIST = [
+            {
+                text: '﴿ إِنَّ الصَّلَاةَ كَانَتْ عَلَى الْمُؤْمِنِينَ كِتَابًا مَوْقُوتًا ﴾',
+                ref: 'سورة النساء - آية 103',
+                category: 'آية قرآنية'
+            },
+            {
+                text: '« اللَّهُمَّ أَعِنِّي عَلَى ذِكْرِكَ، وَشُكْرِكَ، وَحُسْنِ عِبَادَتِكَ »',
+                ref: 'وصية النبي ﷺ لمعاذ بن جبل دُبر كل صلاة',
+                category: 'أذكار الصلاة'
+            },
+            {
+                text: '﴿ أَقِمِ الصَّلَاةَ لِدُلُوكِ الشَّمْسِ إِلَىٰ غَسَقِ اللَّيْلِ وَقُرْآنَ الْفَجْرِ ۖ إِنَّ قُرْآنَ الْفَجْرِ كَانَ مَشْهُودًا ﴾',
+                ref: 'سورة الإسراء - آية 78',
+                category: 'آية قرآنية'
+            },
+            {
+                text: '« سُبْحَانَ اللَّهِ وَبِحَمْدِهِ، عَدَدَ خَلْقِهِ، وَرِضَا نَفْسِهِ، وَزِنَةَ عَرْشِهِ، وَمِدَادَ كَلِمَاتِهِ »',
+                ref: 'رواه مسلم • ثلاث مرات صباحاً',
+                category: 'أذكار الصباح'
+            },
+            {
+                text: '« اللَّهُمَّ رَبَّ هَذِهِ الدَّعْوَةِ التَّامَّةِ، وَالصَّلَاةِ القَائِمَةِ، آتِ مُحَمَّدًا الوَسِيلَةَ وَالفَضِيلَةَ، وَابْعَثْهُ مَقَامًا مَحْمُودًا الَّذِي وَعَدْتَهُ »',
+                ref: 'الدعاء بعد سماع الأذان • تحل له شفاعة النبي ﷺ',
+                category: 'سنن الأذان'
+            },
+            {
+                text: '﴿ رَبِّ اجْعَلْنِي مُقِيمَ الصَّلَاةِ وَمِن ذُرِّيَّتِي ۚ رَبَّنَا وَتَقَبَّلْ دُعَاءِ ﴾',
+                ref: 'سورة إبراهيم - آية 40',
+                category: 'دعاء قرآني'
+            }
+        ];
+
+        /********************************************************************
+         * 2. APPLICATION STATE
+         ********************************************************************/
+        let currentCityIndex = 0;
+        let currentTimings = {
+            Fajr: '04:55',
+            Sunrise: '06:23',
+            Dhuhr: '11:54',
+            Asr: '15:02',
+            Maghrib: '17:25',
+            Isha: '18:45'
+        };
+        let audioAlertEnabled = true;
+        let dimmerLevels = [0, 0.35, 0.65];
+        let currentDimmerIndex = 0;
+        let currentDhikrIndex = 0;
+        let lastTriggeredPrayerKey = null;
+
+        // Remote Navigation State
+        let activeModal = null; // null | 'city' | 'detail'
+        let focusRow = 2; // Start focused on the upcoming prayer card
+        let focusCol = 0;
+        let modalFocusIndex = 0;
+
+        /********************************************************************
+         * 3. BUILT-IN ASTRONOMICAL FALLBACK CALCULATOR (100% Offline Ready)
+         * Ensures accurate times on TV browsers even if API/SSL fails
+         ********************************************************************/
+        function calculateAstronomicalPrayerTimes(date, lat, lng, method) {
+            const rad = Math.PI / 180;
+            const deg = 180 / Math.PI;
+
+            // Day of year
+            const start = new Date(date.getFullYear(), 0, 0);
+            const diff = date - start;
+            const dayOfYear = Math.floor(diff / (1000 * 60 * 60 * 24));
+
+            // Fractional year gamma in radians
+            const gamma = ((2 * Math.PI) / 365) * (dayOfYear - 1 + 0.5);
+
+            // Equation of time (in minutes)
+            const eqTime = 229.18 * (
+                0.000075 +
+                0.001868 * Math.cos(gamma) -
+                0.032077 * Math.sin(gamma) -
+                0.014615 * Math.cos(2 * gamma) -
+                0.040849 * Math.sin(2 * gamma)
+            );
+
+            // Solar declination (in radians)
+            const decl = 0.006918 -
+                0.399912 * Math.cos(gamma) +
+                0.070257 * Math.sin(gamma) -
+                0.006758 * Math.cos(2 * gamma) +
+                0.000907 * Math.sin(2 * gamma) -
+                0.002697 * Math.cos(3 * gamma) +
+                0.00148 * Math.sin(3 * gamma);
+
+            // Timezone offset in hours from browser
+            const tzOffset = -date.getTimezoneOffset() / 60;
+
+            // Solar Noon in hours
+            const solarNoon = 12 + tzOffset - (lng / 15) - (eqTime / 60);
+
+            function hourAngleForAngle(angleDeg) {
+                const cosHA = (Math.cos((90 + angleDeg) * rad) - Math.sin(lat * rad) * Math.sin(decl)) /
+                              (Math.cos(lat * rad) * Math.cos(decl));
+                const clamped = Math.max(-1, Math.min(1, cosHA));
+                return (Math.acos(clamped) * deg) / 15;
+            }
+
+            // Egyptian General Authority of Survey (Method 5): Fajr 19.5°, Isha 17.5°
+            // Umm Al-Qura (Method 4): Fajr 18.5°, Isha +90m after Maghrib
+            const fajrAngle = method === 4 ? 18.5 : 19.5;
+            const ishaAngle = 17.5;
+
+            const fajrTime = solarNoon - hourAngleForAngle(fajrAngle);
+            const sunriseTime = solarNoon - hourAngleForAngle(0.833);
+            const dhuhrTime = solarNoon + (2 / 60); // 2 min precaution after zenith
+            
+            // Asr (Shafi'i / Standard: shadow factor = 1)
+            const asrAlt = Math.atan(1 / (1 + Math.tan(Math.abs(lat * rad - decl))));
+            const cosAsr = (Math.sin(asrAlt) - Math.sin(lat * rad) * Math.sin(decl)) /
+                           (Math.cos(lat * rad) * Math.cos(decl));
+            const asrHA = (Math.acos(Math.max(-1, Math.min(1, cosAsr))) * deg) / 15;
+            const asrTime = solarNoon + asrHA;
+
+            const maghribTime = solarNoon + hourAngleForAngle(0.833) + (1 / 60);
+            const ishaTime = method === 4
+                ? maghribTime + 1.5
+                : solarNoon + hourAngleForAngle(ishaAngle);
+
+            function formatHours(h) {
+                const totalMins = Math.round(((h % 24) + 24) % 24 * 60);
+                const hrs = Math.floor(totalMins / 60) % 24;
+                const mins = totalMins % 60;
+                return `${String(hrs).padStart(2, '0')}:${String(mins).padStart(2, '0')}`;
+            }
+
+            return {
+                Fajr: formatHours(fajrTime),
+                Sunrise: formatHours(sunriseTime),
+                Dhuhr: formatHours(dhuhrTime),
+                Asr: formatHours(asrTime),
+                Maghrib: formatHours(maghribTime),
+                Isha: formatHours(ishaTime)
+            };
+        }
+
+        /********************************************************************
+         * 4. FETCH PRAYER TIMES (ALADHAN API + LOCAL FALLBACK)
+         ********************************************************************/
+        async function loadPrayerTimesForCity(cityIndex) {
+            currentCityIndex = cityIndex;
+            const city = CITIES[cityIndex];
+
+            // Save selection in localStorage if supported
+            try {
+                localStorage.setItem('tv_prayer_city_index', String(cityIndex));
+            } catch (e) {}
+
+            // Update UI labels immediately
+            document.getElementById('currentCityName').textContent = city.name;
+            document.getElementById('heroCityLabel').textContent = city.name;
+
+            // 1. Immediately compute astronomical fallback so UI is instant
+            const now = new Date();
+            currentTimings = calculateAstronomicalPrayerTimes(now, city.lat, city.lng, city.method);
+            renderPrayerGrid();
+            updateClockAndCountdowns();
+
+            // 2. Attempt live fetch from Aladhan API
+            const badge = document.getElementById('connectionBadge');
+            try {
+                const timestamp = Math.floor(now.getTime() / 1000);
+                const url = `https://api.aladhan.com/v1/timings/${timestamp}?latitude=${city.lat}&longitude=${city.lng}&method=${city.method}`;
+                const response = await fetch(url);
+                if (!response.ok) throw new Error('Network response not ok');
+                const json = await response.json();
+
+                if (json && json.data && json.data.timings) {
+                    const t = json.data.timings;
+                    const cleanTime = (str) => str.split(' ')[0];
+                    currentTimings = {
+                        Fajr: cleanTime(t.Fajr),
+                        Sunrise: cleanTime(t.Sunrise),
+                        Dhuhr: cleanTime(t.Dhuhr),
+                        Asr: cleanTime(t.Asr),
+                        Maghrib: cleanTime(t.Maghrib),
+                        Isha: cleanTime(t.Isha)
+                    };
+
+                    // Update Hijri date if provided by API
+                    if (json.data.date && json.data.date.hijri) {
+                        const h = json.data.date.hijri;
+                        const g = json.data.date.gregorian;
+                        const hijriStr = `${h.weekday.ar} • ${h.day} ${h.month.ar} ${h.year} هـ`;
+                        const gregStr = `الموافق ${g.day}/${g.month.number}/${g.year} م`;
+                        document.getElementById('fullDateDisplay').textContent = `${hijriStr} — ${gregStr}`;
+                    }
+
+                    badge.textContent = city.method === 4 ? 'متصل • تقويم أم القرى' : 'متصل • هيئة المساحة المصرية';
+                    badge.className = 'text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-semibold';
+                    renderPrayerGrid();
+                    updateClockAndCountdowns();
+                }
+            } catch (err) {
+                // Fallback mode is already active and accurate
+                badge.textContent = 'حساب فلكي دقيق • يعمل بدون إنترنت';
+                badge.className = 'text-xs px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 font-semibold';
+                updateFallbackDateDisplay();
+            }
+        }
+
+        function updateFallbackDateDisplay() {
+            const now = new Date();
+            try {
+                const hijriFormatter = new Intl.DateTimeFormat('ar-SA-u-ca-islamic', {
+                    weekday: 'long',
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric'
+                });
+                const gregFormatter = new Intl.DateTimeFormat('ar-EG', {
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric'
+                });
+                document.getElementById('fullDateDisplay').textContent =
+                    `${hijriFormatter.format(now)} — الموافق ${gregFormatter.format(now)}`;
+            } catch (e) {
+                document.getElementById('fullDateDisplay').textContent = now.toLocaleDateString('ar-EG');
+            }
+        }
+
+        /********************************************************************
+         * 5. TIME FORMATTING & PRAYER GRID RENDERING
+         ********************************************************************/
+        function formatTo12HourArabic(time24) {
+            const [hStr, mStr] = time24.split(':');
+            let h = parseInt(hStr, 10);
+            const period = h >= 12 ? 'م' : 'ص';
+            h = h % 12;
+            if (h === 0) h = 12;
+            return `${String(h).padStart(2, '0')}:${mStr} ${period}`;
+        }
+
+        function timeToMinutes(time24) {
+            const [h, m] = time24.split(':').map(Number);
+            return h * 60 + m;
+        }
+
+        function getUpcomingAndPreviousPrayer(now) {
+            const nowSeconds = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
+            const schedule = PRAYER_META.map((meta, idx) => {
+                const tStr = currentTimings[meta.key];
+                const [h, m] = tStr.split(':').map(Number);
+                return {
+                    ...meta,
+                    index: idx,
+                    time24: tStr,
+                    seconds: h * 3600 + m * 60
+                };
+            });
+
+            // Find first prayer whose time in seconds is > nowSeconds
+            let nextPrayer = schedule.find(p => p.seconds > nowSeconds);
+            let prevPrayer = null;
+            let remainingSeconds = 0;
+            let totalIntervalSeconds = 1;
+
+            if (nextPrayer) {
+                const prevIndex = (nextPrayer.index - 1 + schedule.length) % schedule.length;
+                prevPrayer = schedule[prevIndex];
+                remainingSeconds = nextPrayer.seconds - nowSeconds;
+
+                if (nextPrayer.index === 0) {
+                    // Between midnight and Fajr: previous was yesterday's Isha
+                    const sinceIsha = (24 * 3600 - prevPrayer.seconds) + nowSeconds;
+                    totalIntervalSeconds = sinceIsha + remainingSeconds;
+                } else {
+                    totalIntervalSeconds = nextPrayer.seconds - prevPrayer.seconds;
+                }
+            } else {
+                // After Isha: Next prayer is tomorrow's Fajr
+                nextPrayer = schedule[0];
+                prevPrayer = schedule[schedule.length - 1];
+                remainingSeconds = (24 * 3600 - nowSeconds) + nextPrayer.seconds;
+                totalIntervalSeconds = (24 * 3600 - prevPrayer.seconds) + nextPrayer.seconds;
+            }
+
+            const elapsedSeconds = Math.max(0, totalIntervalSeconds - remainingSeconds);
+            const progressPct = Math.min(100, Math.max(3, Math.round((elapsedSeconds / totalIntervalSeconds) * 100)));
+
+            return {
+                nextPrayer,
+                prevPrayer,
+                remainingSeconds,
+                progressPct
+            };
+        }
+
+        function renderPrayerGrid() {
+            const grid = document.getElementById('prayerCardsGrid');
+            const now = new Date();
+            const { nextPrayer } = getUpcomingAndPreviousPrayer(now);
+
+            grid.innerHTML = PRAYER_META.map((meta, idx) => {
+                const time24 = currentTimings[meta.key];
+                const formatted = formatTo12HourArabic(time24);
+                const isNext = nextPrayer.key === meta.key;
+
+                return `
+                    <button
+                        type="button"
+                        data-focusable="true"
+                        data-row="2"
+                        data-col="${idx}"
+                        onclick="openPrayerDetailModal(${idx})"
+                        class="tv-focusable rounded-2xl p-4 lg:p-5 flex flex-col items-center justify-between text-center cursor-pointer relative overflow-hidden ${isNext ? 'next-prayer-card' : 'tv-card hover:bg-emerald-900/40'}"
+                    >
+                        ${isNext ? `
+                            <span class="px-3 py-0.5 rounded-full bg-amber-400 text-slate-950 font-black text-xs mb-2 shadow">
+                                الصلاة القادمة
+                            </span>
+                        ` : `
+                            <span class="text-xs text-emerald-300/70 font-semibold mb-2">
+                                ${meta.key === 'Sunrise' ? 'وقت الشروق' : 'فرض'}
+                            </span>
+                        `}
+
+                        <div class="${isNext ? 'text-amber-300' : 'text-emerald-300/90'} my-1">
+                            ${meta.icon}
+                        </div>
+
+                        <h4 class="text-xl lg:text-2xl font-black ${isNext ? 'gold-gradient-text' : 'text-white'} mt-1">
+                            ${meta.name}
+                        </h4>
+
+                        <div class="text-2xl lg:text-3xl font-extrabold ${isNext ? 'text-amber-200' : 'text-emerald-100'} mt-2 tabular-nums">
+                            ${formatted}
+                        </div>
+                    </button>
+                `;
+            }).join('');
+
+            applyRemoteFocusVisuals();
+        }
+
+        /********************************************************************
+         * 6. LIVE CLOCK & COUNTDOWN ENGINE (RUNS EVERY SECOND)
+         ********************************************************************/
+        let lastNextPrayerKey = null;
+
+        function updateClockAndCountdowns() {
+            const now = new Date();
+
+            // 1. Update Live Clock
+            let hours = now.getHours();
+            const mins = String(now.getMinutes()).padStart(2, '0');
+            const secs = String(now.getSeconds()).padStart(2, '0');
+            const period = hours >= 12 ? 'م' : 'ص';
+            hours = hours % 12;
+            if (hours === 0) hours = 12;
+
+            document.getElementById('liveClockTime').textContent = `${String(hours).padStart(2, '0')}:${mins}`;
+            document.getElementById('liveClockSeconds').textContent = `:${secs}`;
+            document.getElementById('liveClockPeriod').textContent = period;
+
+            // 2. Calculate Next & Previous Prayer
+            const { nextPrayer, prevPrayer, remainingSeconds, progressPct } = getUpcomingAndPreviousPrayer(now);
+
+            // Re-render cards if active prayer changed
+            if (lastNextPrayerKey !== nextPrayer.key) {
+                lastNextPrayerKey = nextPrayer.key;
+                renderPrayerGrid();
+            }
+
+            // Format Countdown HH:MM:SS
+            const remH = String(Math.floor(remainingSeconds / 3600)).padStart(2, '0');
+            const remM = String(Math.floor((remainingSeconds % 3600) / 60)).padStart(2, '0');
+            const remS = String(remainingSeconds % 60).padStart(2, '0');
+
+            document.getElementById('nextPrayerName').textContent = nextPrayer.name;
+            document.getElementById('nextPrayerTimeFormatted').textContent = formatTo12HourArabic(nextPrayer.time24);
+            document.getElementById('countdownTimer').textContent = `${remH}:${remM}:${remS}`;
+
+            document.getElementById('prevPrayerProgressLabel').textContent = `الصلاة السابقة: ${prevPrayer.name} (${formatTo12HourArabic(prevPrayer.time24)})`;
+            document.getElementById('progressPercentageLabel').textContent = `مضى ${progressPct}% من الوقت`;
+            document.getElementById('prayerProgressBar').style.width = `${progressPct}%`;
+
+            // Check if Adhan moment arrived (remainingSeconds === 1)
+            const currentKeyMinute = `${nextPrayer.key}_${now.getHours()}_${now.getMinutes()}`;
+            if (remainingSeconds <= 1 && lastTriggeredPrayerKey !== currentKeyMinute) {
+                lastTriggeredPrayerKey = currentKeyMinute;
+                if (audioAlertEnabled && nextPrayer.key !== 'Sunrise') {
+                    playSpiritualAdhanChime();
+                }
+                openPrayerDetailModal(nextPrayer.index, true);
+            }
+        }
+
+        /********************************************************************
+         * 7. DHIKR ROTATION ENGINE
+         ********************************************************************/
+        function renderDhikr() {
+            const item = DHIKR_LIST[currentDhikrIndex];
+            const textEl = document.getElementById('dhikrContentText');
+            const refEl = document.getElementById('dhikrReferenceText');
+            const catEl = document.getElementById('dhikrCategoryBadge');
+
+            textEl.style.opacity = '0';
+            setTimeout(() => {
+                textEl.textContent = item.text;
+                refEl.textContent = item.ref;
+                catEl.textContent = item.category;
+                textEl.style.opacity = '1';
+            }, 220);
+
+            // Render indicator dots
+            const dotsContainer = document.getElementById('dhikrDots');
+            dotsContainer.innerHTML = DHIKR_LIST.map((_, i) => `
+                <span class="h-2 rounded-full transition-all ${i === currentDhikrIndex ? 'w-6 bg-amber-400' : 'w-2 bg-emerald-700'}"></span>
+            `).join('');
+        }
+
+        function changeDhikr(step) {
+            playRemoteTickSound();
+            currentDhikrIndex = (currentDhikrIndex + step + DHIKR_LIST.length) % DHIKR_LIST.length;
+            renderDhikr();
+        }
+
+        /********************************************************************
+         * 8. WEB AUDIO API SPIRITUAL ADHAN CHIME & REMOTE TICK SOUND
+         ********************************************************************/
+        let audioCtx = null;
+
+        function ensureAudioContext() {
+            if (!audioCtx) {
+                const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                if (AudioContextClass) {
+                    audioCtx = new AudioContextClass();
+                }
+            }
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        function playRemoteTickSound() {
+            try {
+                ensureAudioContext();
+                if (!audioCtx) return;
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(520, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(660, audioCtx.currentTime + 0.045);
+
+                gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.045);
+
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.05);
+            } catch (e) {}
+        }
+
+        function playSpiritualAdhanChime() {
+            try {
+                ensureAudioContext();
+                if (!audioCtx) return;
+
+                // Maqam Hijaz inspired spiritual warm harmonic notes (D4, Eb4, F#4, G4, A4, D5)
+                const notes = [
+                    { freq: 293.66, start: 0.0, duration: 0.9 },
+                    { freq: 311.13, start: 0.45, duration: 0.9 },
+                    { freq: 369.99, start: 0.9, duration: 1.1 },
+                    { freq: 392.00, start: 1.4, duration: 1.2 },
+                    { freq: 440.00, start: 2.0, duration: 1.6 },
+                    { freq: 587.33, start: 2.6, duration: 2.4 }
+                ];
+
+                notes.forEach(n => {
+                    const osc = audioCtx.createOscillator();
+                    const subOsc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+
+                    osc.type = 'triangle';
+                    subOsc.type = 'sine';
+                    osc.frequency.setValueAtTime(n.freq, audioCtx.currentTime + n.start);
+                    subOsc.frequency.setValueAtTime(n.freq * 0.5, audioCtx.currentTime + n.start);
+
+                    gain.gain.setValueAtTime(0.001, audioCtx.currentTime + n.start);
+                    gain.gain.linearRampToValueAtTime(0.18, audioCtx.currentTime + n.start + 0.12);
+                    gain.gain.exponentialRampToValueAtTime(0.0008, audioCtx.currentTime + n.start + n.duration);
+
+                    osc.connect(gain);
+                    subOsc.connect(gain);
+                    gain.connect(audioCtx.destination);
+
+                    osc.start(audioCtx.currentTime + n.start);
+                    subOsc.start(audioCtx.currentTime + n.start);
+                    osc.stop(audioCtx.currentTime + n.start + n.duration);
+                    subOsc.stop(audioCtx.currentTime + n.start + n.duration);
+                });
+            } catch (e) {}
+        }
+
+        function toggleAudioAlert() {
+            audioAlertEnabled = !audioAlertEnabled;
+            playRemoteTickSound();
+            const statusText = document.getElementById('audioStatusText');
+            statusText.textContent = audioAlertEnabled ? 'التنبيه: مفعل' : 'التنبيه: صامت';
+        }
+
+        function triggerAdhanPreview() {
+            playSpiritualAdhanChime();
+            const now = new Date();
+            const { nextPrayer } = getUpcomingAndPreviousPrayer(now);
+            openPrayerDetailModal(nextPrayer.index, true);
+        }
+
+        function cycleNightDimmer() {
+            playRemoteTickSound();
+            currentDimmerIndex = (currentDimmerIndex + 1) % dimmerLevels.length;
+            const opacity = dimmerLevels[currentDimmerIndex];
+            document.getElementById('nightDimmerOverlay').style.opacity = String(opacity);
+            const labels = ['إضاءة: 100%', 'إضاءة: هادئة 65%', 'تعتيم ليلي: 35%'];
+            document.getElementById('dimmerStatusText').textContent = labels[currentDimmerIndex];
+        }
+
+        /********************************************************************
+         * 9. MODALS (CITY SELECTOR & PRAYER DETAILS)
+         ********************************************************************/
+        function openCityModal() {
+            playRemoteTickSound();
+            activeModal = 'city';
+            modalFocusIndex = currentCityIndex;
+            const modal = document.getElementById('cityModal');
+            const grid = document.getElementById('citiesModalGrid');
+
+            grid.innerHTML = CITIES.map((c, idx) => {
+                const isSelected = idx === currentCityIndex;
+                return `
+                    <button
+                        type="button"
+                        data-modal-city="${idx}"
+                        onclick="selectCityFromModal(${idx})"
+                        class="tv-focusable p-4 rounded-2xl text-right border transition-all cursor-pointer ${isSelected ? 'bg-amber-500/20 border-amber-400' : 'bg-emerald-950/90 border-emerald-700/50 hover:bg-emerald-900'}"
+                    >
+                        <div class="flex items-center justify-between">
+                            <span class="text-xl font-black text-white">${c.name}</span>
+                            ${isSelected ? '<span class="text-xs px-2 py-0.5 rounded bg-amber-400 text-slate-950 font-bold">الحالية</span>' : ''}
+                        </div>
+                        <p class="text-xs text-emerald-300/80 mt-1">${c.region}</p>
+                    </button>
+                `;
+            }).join('');
+
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            applyRemoteFocusVisuals();
+        }
+
+        function selectCityFromModal(idx) {
+            playRemoteTickSound();
+            loadPrayerTimesForCity(idx);
+            closeCityModal();
+        }
+
+        function closeCityModal() {
+            playRemoteTickSound();
+            activeModal = null;
+            const modal = document.getElementById('cityModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            applyRemoteFocusVisuals();
+        }
+
+        function openPrayerDetailModal(prayerIdx, isAdhanAlert = false) {
+            playRemoteTickSound();
+            activeModal = 'detail';
+            const meta = PRAYER_META[prayerIdx];
+            const time24 = currentTimings[meta.key];
+
+            document.getElementById('modalBadge').textContent = isAdhanAlert
+                ? 'حان الآن موعد الأذان حسب التوقيت المحلي'
+                : 'تفاصيل الصلاة والسنن الرواتب';
+            document.getElementById('modalPrayerTitle').textContent = `صلاة ${meta.name}`;
+            document.getElementById('modalPrayerTime').textContent = formatTo12HourArabic(time24);
+            document.getElementById('modalFardRakats').textContent = meta.fard;
+            document.getElementById('modalSunnahRakats').textContent = meta.sunnah;
+            document.getElementById('modalVirtueText').textContent = meta.virtue;
+
+            const modal = document.getElementById('prayerDetailModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            applyRemoteFocusVisuals();
+        }
+
+        function closePrayerDetailModal() {
+            playRemoteTickSound();
+            activeModal = null;
+            const modal = document.getElementById('prayerDetailModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            applyRemoteFocusVisuals();
+        }
+
+        /********************************************************************
+         * 10. SMART TV REMOTE CONTROL SPATIAL NAVIGATION ENGINE
+         * Supports both modern `e.key` and Foxxum/Legacy `e.keyCode`
+         ********************************************************************/
+        function getElementsInRow(rowIdx) {
+            return Array.from(document.querySelectorAll(`[data-focusable="true"][data-row="${rowIdx}"]`))
+                .sort((a, b) => Number(a.dataset.col) - Number(b.dataset.col));
+        }
+
+        function applyRemoteFocusVisuals() {
+            // Clear existing focus classes
+            document.querySelectorAll('.tv-focused').forEach(el => el.classList.remove('tv-focused'));
+
+            if (activeModal === 'city') {
+                const cityBtns = Array.from(document.querySelectorAll('[data-modal-city]'));
+                const closeBtn = document.getElementById('btnCloseCityModal');
+                const allModalItems = [...cityBtns, closeBtn];
+                modalFocusIndex = Math.max(0, Math.min(allModalItems.length - 1, modalFocusIndex));
+                const target = allModalItems[modalFocusIndex];
+                if (target) {
+                    target.classList.add('tv-focused');
+                    target.focus({ preventScroll: true });
+                }
+                return;
+            }
+
+            if (activeModal === 'detail') {
+                const closeBtn = document.getElementById('btnCloseDetailModal');
+                if (closeBtn) {
+                    closeBtn.classList.add('tv-focused');
+                    closeBtn.focus({ preventScroll: true });
+                }
+                return;
+            }
+
+            // Main Dashboard Spatial Focus
+            const rowEls = getElementsInRow(focusRow);
+            if (rowEls.length === 0) return;
+            focusCol = Math.max(0, Math.min(rowEls.length - 1, focusCol));
+            const target = rowEls[focusCol];
+            if (target) {
+                target.classList.add('tv-focused');
+                target.focus({ preventScroll: true });
+            }
+        }
+
+        window.addEventListener('keydown', function (e) {
+            const code = e.keyCode || e.which;
+            const key = e.key;
+
+            const isRight = key === 'ArrowRight' || code === 39;
+            const isLeft = key === 'ArrowLeft' || code === 37;
+            const isUp = key === 'ArrowUp' || code === 38;
+            const isDown = key === 'ArrowDown' || code === 40;
+            const isEnter = key === 'Enter' || code === 13;
+            const isBack = key === 'Escape' || key === 'Backspace' || code === 27 || code === 8 || code === 461;
+
+            if (isRight || isLeft || isUp || isDown || isEnter || isBack) {
+                e.preventDefault();
+            }
+
+            // Handle Modal Navigation
+            if (activeModal === 'detail') {
+                if (isEnter || isBack) {
+                    closePrayerDetailModal();
+                }
+                return;
+            }
+
+            if (activeModal === 'city') {
+                const total = CITIES.length + 1; // +1 for close button
+                if (isBack) {
+                    closeCityModal();
+                    return;
+                }
+                // Note: In RTL grid, pressing Left moves to next item in row
+                if (isLeft) modalFocusIndex = (modalFocusIndex + 1) % total;
+                if (isRight) modalFocusIndex = (modalFocusIndex - 1 + total) % total;
+                if (isDown) modalFocusIndex = Math.min(total - 1, modalFocusIndex + 4);
+                if (isUp) modalFocusIndex = Math.max(0, modalFocusIndex - 4);
+                if (isLeft || isRight || isDown || isUp) {
+                    playRemoteTickSound();
+                    applyRemoteFocusVisuals();
+                }
+                if (isEnter) {
+                    const focusedEl = document.querySelector('.tv-focused');
+                    if (focusedEl) focusedEl.click();
+                }
+                return;
+            }
+
+            // Main Dashboard Navigation (RTL aware: Left arrow increases column index, Right arrow decreases column index)
+            if (isLeft) {
+                const rowEls = getElementsInRow(focusRow);
+                focusCol = (focusCol + 1) % rowEls.length;
+                playRemoteTickSound();
+                applyRemoteFocusVisuals();
+            } else if (isRight) {
+                const rowEls = getElementsInRow(focusRow);
+                focusCol = (focusCol - 1 + rowEls.length) % rowEls.length;
+                playRemoteTickSound();
+                applyRemoteFocusVisuals();
+            } else if (isDown) {
+                focusRow = Math.min(2, focusRow + 1);
+                playRemoteTickSound();
+                applyRemoteFocusVisuals();
+            } else if (isUp) {
+                focusRow = Math.max(0, focusRow - 1);
+                playRemoteTickSound();
+                applyRemoteFocusVisuals();
+            } else if (isEnter) {
+                const focusedEl = document.querySelector('.tv-focused');
+                if (focusedEl) focusedEl.click();
+            }
+        });
+
+        /********************************************************************
+         * 11. INITIALIZATION ON WINDOW LOAD
+         ********************************************************************/
+        window.onload = function () {
+            // Restore saved city if any
+            let savedIndex = 0;
+            try {
+                const stored = localStorage.getItem('tv_prayer_city_index');
+                if (stored !== null && !isNaN(Number(stored))) {
+                    savedIndex = Math.max(0, Math.min(CITIES.length - 1, Number(stored)));
+                }
+            } catch (e) {}
+
+            updateFallbackDateDisplay();
+            loadPrayerTimesForCity(savedIndex);
+            renderDhikr();
+
+            // Focus the upcoming prayer card on start
+            const { nextPrayer } = getUpcomingAndPreviousPrayer(new Date());
+            focusRow = 2;
+            focusCol = nextPrayer.index;
+            applyRemoteFocusVisuals();
+
+            // Live clock every 1 second
+            setInterval(updateClockAndCountdowns, 1000);
+
+            // Auto-cycle Dhikr every 15 seconds
+            setInterval(() => {
+                currentDhikrIndex = (currentDhikrIndex + 1) % DHIKR_LIST.length;
+                renderDhikr();
+            }, 15000);
+        };
+    </script>
+</body>
+</html>
