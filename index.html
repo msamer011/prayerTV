@@ -2,10 +2,9 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=1280, initial-scale=1.0">
 <title>مواقيت الصلاة | TORNADO Smart TV</title>
 <style>
-  /* تصميم مخصص متوافق 100% مع متصفحات الشاشات الذكية Foxxum / Linux TV */
   * {
     box-sizing: border-box;
     margin: 0;
@@ -18,46 +17,49 @@
     width: 100%;
     height: 100%;
     background-color: #041612;
-    background-image: radial-gradient(circle at 50% 0%, #0b342b 0%, #041612 75%);
+    background-image: radial-gradient(circle at 50% 0%, #0b342b 0%, #041612 80%);
     color: #f8fafc;
     font-family: 'Tahoma', 'Arial', sans-serif;
     overflow: hidden;
   }
 
+  /* تكبير تلقائي لكامل الشاشة ليناسب القراءة عن بعد */
+  body {
+    zoom: 1.45;
+  }
+
   .app-wrapper {
     width: 100%;
     height: 100%;
-    padding: 22px 32px;
-    display: table;
-    table-layout: fixed;
+    padding: 18px 28px 65px 28px;
   }
 
   /* الهيدر العلوي */
   .header-table {
     width: 100%;
+    height: 16%;
     border-collapse: collapse;
-    margin-bottom: 18px;
+    margin-bottom: 14px;
     background-color: #08261f;
-    border: 1px solid #1c4d40;
-    border-radius: 14px;
-    padding: 12px 20px;
+    border: 2px solid #1c4d40;
+    border-radius: 16px;
   }
 
   .header-cell {
     vertical-align: middle;
-    padding: 12px 18px;
+    padding: 14px 24px;
   }
 
   .brand-title {
-    font-size: 26px;
+    font-size: 38px;
     font-weight: bold;
     color: #eab308;
-    margin-bottom: 4px;
+    margin-bottom: 6px;
   }
 
   .brand-sub {
-    font-size: 15px;
-    color: #94a3b8;
+    font-size: 20px;
+    color: #cbd5e1;
   }
 
   .dates-box {
@@ -65,15 +67,15 @@
   }
 
   .hijri-date {
-    font-size: 22px;
+    font-size: 32px;
     font-weight: bold;
     color: #fde047;
-    margin-bottom: 4px;
+    margin-bottom: 6px;
   }
 
   .greg-date {
-    font-size: 15px;
-    color: #cbd5e1;
+    font-size: 22px;
+    color: #e2e8f0;
   }
 
   .clock-box {
@@ -82,22 +84,24 @@
   }
 
   .digital-clock {
-    font-size: 36px;
+    font-size: 54px;
     font-weight: bold;
     color: #ffffff;
     letter-spacing: 2px;
   }
 
   .clock-ampm {
-    font-size: 16px;
+    font-size: 24px;
+    font-weight: bold;
     color: #eab308;
-    margin-left: 6px;
+    margin-left: 8px;
   }
 
   /* أزرار التحكم العلوية */
   .controls-bar {
     width: 100%;
-    margin-bottom: 18px;
+    height: 10%;
+    margin-bottom: 14px;
     text-align: right;
   }
 
@@ -105,12 +109,12 @@
     display: inline-block;
     background-color: #0b2e26;
     color: #f1f5f9;
-    border: 2px solid #1e5245;
-    border-radius: 10px;
-    padding: 10px 20px;
-    font-size: 18px;
+    border: 3px solid #1e5245;
+    border-radius: 12px;
+    padding: 12px 24px;
+    font-size: 24px;
     font-weight: bold;
-    margin-left: 12px;
+    margin-left: 14px;
     cursor: pointer;
     vertical-align: middle;
   }
@@ -123,93 +127,93 @@
   /* القسم الأوسط: العد التنازلي + الأذكار */
   .middle-table {
     width: 100%;
+    height: 34%;
     border-collapse: separate;
-    border-spacing: 16px 0;
-    margin-bottom: 20px;
-    margin-left: -16px;
-    margin-right: -16px;
+    border-spacing: 18px 0;
+    margin-bottom: 18px;
   }
 
   .hero-panel {
-    width: 48%;
+    width: 45%;
     background-color: #092c24;
-    border: 2px solid #eab308;
-    border-radius: 16px;
-    padding: 20px 24px;
-    vertical-align: middle;
-    text-align: center;
-  }
-
-  .next-label {
-    font-size: 18px;
-    color: #cbd5e1;
-    margin-bottom: 6px;
-  }
-
-  .next-prayer-name {
-    font-size: 40px;
-    font-weight: bold;
-    color: #fde047;
-    margin-bottom: 8px;
-  }
-
-  .countdown-timer {
-    font-size: 44px;
-    font-weight: bold;
-    color: #ffffff;
-    direction: ltr;
-    letter-spacing: 3px;
-    background-color: #041612;
-    padding: 8px 22px;
-    border-radius: 12px;
-    display: inline-block;
-    border: 1px solid #1c4d40;
-  }
-
-  .zikr-panel {
-    width: 52%;
-    background-color: #08261f;
-    border: 2px solid #1c4d40;
-    border-radius: 16px;
+    border: 3px solid #eab308;
+    border-radius: 20px;
     padding: 20px 26px;
     vertical-align: middle;
     text-align: center;
   }
 
+  .next-label {
+    font-size: 26px;
+    color: #cbd5e1;
+    margin-bottom: 8px;
+    font-weight: bold;
+  }
+
+  .next-prayer-name {
+    font-size: 58px;
+    font-weight: bold;
+    color: #fde047;
+    margin-bottom: 12px;
+  }
+
+  .countdown-timer {
+    font-size: 62px;
+    font-weight: bold;
+    color: #ffffff;
+    direction: ltr;
+    letter-spacing: 4px;
+    background-color: #041612;
+    padding: 10px 32px;
+    border-radius: 16px;
+    display: inline-block;
+    border: 2px solid #1c4d40;
+  }
+
+  .zikr-panel {
+    width: 55%;
+    background-color: #08261f;
+    border: 3px solid #1c4d40;
+    border-radius: 20px;
+    padding: 22px 30px;
+    vertical-align: middle;
+    text-align: center;
+  }
+
   .zikr-header {
-    font-size: 16px;
+    font-size: 24px;
     color: #eab308;
-    margin-bottom: 10px;
+    margin-bottom: 14px;
     font-weight: bold;
   }
 
   .zikr-content {
-    font-size: 24px;
+    font-size: 36px;
     line-height: 1.5;
     color: #ffffff;
     font-weight: bold;
-    min-height: 72px;
   }
 
   .zikr-hint {
-    font-size: 13px;
+    font-size: 18px;
     color: #94a3b8;
-    margin-top: 10px;
+    margin-top: 14px;
   }
 
   /* شبكة مواقيت الصلاة الستة */
   .prayers-table {
     width: 100%;
+    height: 34%;
     border-collapse: separate;
-    border-spacing: 12px 0;
+    border-spacing: 14px 0;
   }
 
   .prayer-card {
     width: 16.66%;
     background-color: #08261f;
-    border: 2px solid #1c4d40;
-    border-radius: 14px;
-    padding: 18px 10px;
+    border: 3px solid #1c4d40;
+    border-radius: 18px;
+    padding: 22px 10px;
     text-align: center;
     vertical-align: middle;
     cursor: pointer;
@@ -221,10 +225,10 @@
   }
 
   .prayer-name {
-    font-size: 24px;
+    font-size: 36px;
     font-weight: bold;
     color: #e2e8f0;
-    margin-bottom: 10px;
+    margin-bottom: 14px;
   }
 
   .prayer-card.active-next .prayer-name {
@@ -232,62 +236,66 @@
   }
 
   .prayer-time {
-    font-size: 28px;
+    font-size: 46px;
     font-weight: bold;
     color: #ffffff;
     direction: ltr;
-    margin-bottom: 6px;
+    margin-bottom: 8px;
   }
 
   .prayer-ampm {
-    font-size: 14px;
-    color: #94a3b8;
+    font-size: 22px;
+    color: #cbd5e1;
+    font-weight: bold;
   }
 
   .next-badge {
     display: inline-block;
-    margin-top: 8px;
-    padding: 3px 10px;
-    font-size: 13px;
+    margin-top: 12px;
+    padding: 6px 16px;
+    font-size: 20px;
     font-weight: bold;
     background-color: #eab308;
     color: #041612;
-    border-radius: 6px;
+    border-radius: 8px;
   }
 
-  /* التركيز بالريموت كنترول (Spatial Navigation Focus) */
-  .focusable.tv-focused {
+  /* التركيز بالريموت كنترول */
+  .focusable.tv-focused,
+  .modal-focusable.tv-focused,
+  .info-focusable.tv-focused {
     border-color: #fde047 !important;
-    background-color: #134e40 !important;
-    box-shadow: 0 0 18px rgba(250, 204, 21, 0.75);
-    outline: 3px solid #fde047;
+    background-color: #155e4d !important;
+    box-shadow: 0 0 25px rgba(250, 204, 21, 0.85);
+    outline: 4px solid #fde047;
   }
 
   /* شريط الإرشادات السفلي */
   .footer-bar {
     position: fixed;
-    bottom: 14px;
-    right: 32px;
-    left: 32px;
+    bottom: 12px;
+    right: 28px;
+    left: 28px;
     background-color: #061d18;
-    border: 1px solid #163e34;
-    border-radius: 10px;
-    padding: 10px 20px;
-    font-size: 15px;
-    color: #94a3b8;
+    border: 2px solid #163e34;
+    border-radius: 12px;
+    padding: 12px 24px;
+    font-size: 20px;
+    color: #cbd5e1;
+    text-align: center;
   }
 
   .key-badge {
     display: inline-block;
     background-color: #134e40;
     color: #fde047;
-    padding: 2px 8px;
-    border-radius: 5px;
+    padding: 3px 12px;
+    border-radius: 6px;
     font-weight: bold;
-    margin: 0 4px;
+    margin: 0 6px;
   }
 
-  /* النوافذ المنبثقة (المدن وتفاصيل الصلاة) */
+  /* النوافذ المنبثقة */
   .modal-backdrop {
     display: none;
     position: fixed;
@@ -295,41 +303,41 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(2, 12, 10, 0.88);
+    background-color: rgba(2, 12, 10, 0.92);
     z-index: 999;
-    padding-top: 70px;
+    padding-top: 50px;
   }
 
   .modal-box {
-    width: 680px;
+    width: 820px;
     margin: 0 auto;
     background-color: #08261f;
-    border: 3px solid #eab308;
-    border-radius: 18px;
-    padding: 26px;
+    border: 4px solid #eab308;
+    border-radius: 22px;
+    padding: 32px;
     text-align: center;
   }
 
   .modal-title {
-    font-size: 28px;
+    font-size: 38px;
     font-weight: bold;
     color: #fde047;
-    margin-bottom: 18px;
+    margin-bottom: 24px;
   }
 
   .cities-grid {
     width: 100%;
     border-collapse: separate;
-    border-spacing: 10px;
-    margin-bottom: 18px;
+    border-spacing: 14px;
+    margin-bottom: 20px;
   }
 
   .city-option {
     background-color: #0b342b;
-    border: 2px solid #1e5245;
-    border-radius: 10px;
-    padding: 14px;
-    font-size: 20px;
+    border: 3px solid #1e5245;
+    border-radius: 14px;
+    padding: 20px;
+    font-size: 30px;
     font-weight: bold;
     color: #ffffff;
     cursor: pointer;
@@ -337,13 +345,12 @@
   }
 
   .modal-info-text {
-    font-size: 22px;
+    font-size: 32px;
     line-height: 1.6;
     color: #f1f5f9;
-    margin-bottom: 22px;
+    margin-bottom: 28px;
   }
 
-  /* التعتيم الليلي */
   body.night-dim {
     opacity: 0.45;
   }
@@ -355,12 +362,12 @@
   <!-- الهيدر -->
   <table class="header-table">
     <tr>
-      <td class="header-cell" style="width: 38%;">
+      <td class="header-cell" style="width: 40%;">
         <div class="brand-title">🕌 مواقيت الصلاة والأذكار</div>
-        <div class="brand-sub" id="locationSubtitle">حسب التوقيت المحلي لمدينة كفر الشيخ - هيئة المساحة المصرية</div>
+        <div class="brand-sub" id="locationSubtitle">حسب التوقيت المحلي لمدينة كفر الشيخ</div>
       </td>
-      <td class="header-cell dates-box" style="width: 34%;">
-        <div class="hijri-date" id="hijriDateDisplay">جاري حساب التاريخ الهجري...</div>
+      <td class="header-cell dates-box" style="width: 32%;">
+        <div class="hijri-date" id="hijriDateDisplay">18 جمادى الأولى 1448 هـ</div>
         <div class="greg-date" id="gregDateDisplay">--</div>
       </td>
       <td class="header-cell clock-box" style="width: 28%;">
@@ -373,13 +380,16 @@
   <!-- شريط أزرار التحكم بالريموت -->
   <div class="controls-bar">
     <div class="tv-btn tv-btn-gold focusable" data-action="open-cities" id="btnCity">
-      📍 المدينة: <span id="currentCityName">كفر الشيخ</span> (اضغط OK للتغيير)
+      📍 المدينة: <span id="currentCityName">كفر الشيخ</span>
     </div>
     <div class="tv-btn focusable" data-action="test-audio" id="btnAudio">
-      🔊 تنبيه الأذان: مفعل (تجربة الصوت)
+      🔊 تجربة صوت التنبيه
     </div>
     <div class="tv-btn focusable" data-action="toggle-dim" id="btnDim">
-      🌙 وضع التعتيم الليلي
+      🌙 التعتيم الليلي
+    </div>
+    <div class="tv-btn focusable" data-action="cycle-zoom" id="btnZoom">
+      🔍 تكبير الشاشة: <span id="zoomLabel">كبير</span>
     </div>
   </div>
 
@@ -392,11 +402,11 @@
         <div class="countdown-timer" id="countdownDisplay">00:00:00</div>
       </td>
       <td class="zikr-panel focusable" data-action="next-zikr" id="zikrBox">
-        <div class="zikr-header">✨ نفحات إيمانية وأذكار (اضغط OK للتالي)</div>
+        <div class="zikr-header">✨ نفحات إيمانية وأذكار (اضغط OK للذكر التالي)</div>
         <div class="zikr-content" id="zikrText">
           «سُبْحَانَ اللَّهِ وَبِحَمْدِهِ، سُبْحَانَ اللَّهِ الْعَظِيمِ»
         </div>
-        <div class="zikr-hint">يتغير الذكر تلقائياً أو بالضغط على زر OK في الريموت</div>
+        <div class="zikr-hint">يتغير الذكر تلقائياً كل 20 ثانية أو بالضغط على زر OK</div>
       </td>
     </tr>
   </table>
@@ -446,10 +456,10 @@
 
 <!-- شريط الإرشادات السفلي -->
 <div class="footer-bar">
-  تحكم بريموت شاشة <strong>TORNADO</strong>:
-  <span class="key-badge">◀ ▲ ▼ ▶</span> للتنقل بين الأقسام
-  | <span class="key-badge">OK / Enter</span> لاختيار العنصر أو عرض تفاصيل الصلاة
-  | <span class="key-badge">Back / Return</span> لإغلاق النوافذ
+  ريموت شاشة <strong>TORNADO</strong>:
+  <span class="key-badge">◀ ▲ ▼ ▶</span> للتنقل
+  | <span class="key-badge">OK</span> للاختيار أو عرض السنن الرواتب
+  | <span class="key-badge">Return</span> للرجوع
 </div>
 
 <!-- نافذة اختيار المدينة -->
@@ -486,7 +496,6 @@
 </div>
 
 <script>
-  // كود برمجي متوافق بالكامل مع متصفحات التلفزيون (ES5)
   var CITIES = [
     { name: 'كفر الشيخ', lat: 31.1107, lng: 30.9388 },
     { name: 'قلين', lat: 31.0469, lng: 30.8544 },
@@ -525,6 +534,14 @@
     Isha: 'العشاء'
   };
 
+  var ZOOM_LEVELS = [
+    { scale: '1.45', name: 'كبير' },
+    { scale: '1.75', name: 'ضخم جداً' },
+    { scale: '1.15', name: 'متوسط' },
+    { scale: '1.0', name: 'عادي' }
+  ];
+  var currentZoomIdx = 0;
+
   var currentCityIndex = 0;
   var currentZikrIndex = 0;
   var prayerTimesData = {
@@ -538,7 +555,7 @@
 
   var focusList = [];
   var currentFocusIdx = 0;
-  var activeModal = null; // null, 'city', 'info'
+  var activeModal = null;
 
   function padZero(num) {
     return (num < 10 ? '0' : '') + num;
@@ -557,13 +574,12 @@
     };
   }
 
-  // حساب مواقيت الصلاة محلياً وبدقة في حال عدم استجابة الـ API
   function calculateFallbackTimes(lat, lng) {
     var now = new Date();
     var start = new Date(now.getFullYear(), 0, 0);
     var diff = now - start;
     var dayOfYear = Math.floor(diff / (1000 * 60 * 60 * 24));
-    var lngDiff = Math.round((30.9388 - lng) * 4); // فرق الدقائق عن وسط الدلتا
+    var lngDiff = Math.round((30.9388 - lng) * 4);
 
     function shiftTime(baseH, baseM, offsetMin) {
       var total = baseH * 60 + baseM + offsetMin;
@@ -572,7 +588,6 @@
       return padZero(h) + ':' + padZero(m);
     }
 
-    // تعديل موسمي بسيط
     var seasonOffset = Math.round(Math.sin((dayOfYear - 80) * 2 * Math.PI / 365) * 32);
 
     return {
@@ -588,9 +603,8 @@
   function fetchPrayerTimes() {
     var city = CITIES[currentCityIndex];
     document.getElementById('currentCityName').innerHTML = city.name;
-    document.getElementById('locationSubtitle').innerHTML = 'حسب التوقيت المحلي لمدينة ' + city.name + ' - هيئة المساحة المصرية';
+    document.getElementById('locationSubtitle').innerHTML = 'حسب التوقيت المحلي لمدينة ' + city.name;
 
-    // وضع المواقيت الاحتياطية فوراً حتى لا تبقى الشاشة فارغة
     prayerTimesData = calculateFallbackTimes(city.lat, city.lng);
     renderPrayerCards();
 
@@ -649,13 +663,11 @@
     document.getElementById('clockDigits').innerHTML = padZero(h12) + ':' + padZero(m) + ':' + padZero(s);
     document.getElementById('clockAmPm').innerHTML = ampm;
 
-    // التاريخ الميلادي
     var daysAr = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
     var monthsAr = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'];
     document.getElementById('gregDateDisplay').innerHTML =
       daysAr[now.getDay()] + ' ' + now.getDate() + ' ' + monthsAr[now.getMonth()] + ' ' + now.getFullYear() + ' م';
 
-    // حساب الصلاة القادمة
     var keys = ['Fajr', 'Sunrise', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
     var nowSec = h * 3600 + m * 60 + s;
     var nextKey = 'Fajr';
@@ -673,7 +685,6 @@
     }
 
     if (nextDiffSec === -1) {
-      // فجر اليوم التالي
       var fParts = prayerTimesData['Fajr'].split(':');
       var fSec = parseInt(fParts[0], 10) * 3600 + parseInt(fParts[1], 10) * 60;
       nextKey = 'Fajr';
@@ -688,7 +699,6 @@
     document.getElementById('countdownDisplay').innerHTML =
       padZero(remH) + ':' + padZero(remM) + ':' + padZero(remS);
 
-    // تمييز البطاقة النشطة
     var cards = document.querySelectorAll('.prayer-card');
     for (var c = 0; c < cards.length; c++) {
       var pName = cards[c].getAttribute('data-prayer');
@@ -707,7 +717,6 @@
     }
   }
 
-  // صوت تنبيه الأذان بدون ملفات خارجية
   function playAthanChime() {
     try {
       var AudioCtx = window.AudioContext || window.webkitAudioContext;
@@ -731,7 +740,6 @@
     } catch (e) {}
   }
 
-  // إدارة التنقل بريموت التلفزيون (Spatial Navigation)
   function refreshFocusList() {
     var selector = '.focusable';
     if (activeModal === 'city') selector = '.modal-focusable';
@@ -780,6 +788,10 @@
       } else {
         document.body.className = 'night-dim';
       }
+    } else if (action === 'cycle-zoom') {
+      currentZoomIdx = (currentZoomIdx + 1) % ZOOM_LEVELS.length;
+      document.body.style.zoom = ZOOM_LEVELS[currentZoomIdx].scale;
+      document.getElementById('zoomLabel').innerHTML = ZOOM_LEVELS[currentZoomIdx].name;
     } else if (action === 'next-zikr') {
       currentZikrIndex = (currentZikrIndex + 1) % AZKAR.length;
       document.getElementById('zikrText').innerHTML = AZKAR[currentZikrIndex];
@@ -805,11 +817,9 @@
     refreshFocusList();
   }
 
-  // الاستماع لأزرار ريموت التلفزيون والماوس
   document.addEventListener('keydown', function (e) {
     var code = e.keyCode || e.which;
 
-    // Back / Return / Escape
     if (code === 27 || code === 8 || code === 461 || code === 10009) {
       if (activeModal !== null) {
         e.preventDefault();
@@ -818,14 +828,12 @@
       return;
     }
 
-    // Enter / OK
     if (code === 13) {
       e.preventDefault();
       triggerElementAction(focusList[currentFocusIdx]);
       return;
     }
 
-    // في RTL: السهم اليسار (37) يتقدم للعنصر التالي، والسهم اليمين (39) يرجع للسابق
     if (code === 37 || code === 40) {
       e.preventDefault();
       currentFocusIdx = (currentFocusIdx + 1) % focusList.length;
@@ -837,7 +845,6 @@
     }
   });
 
-  // دعم النقر بالماوس أيضاً
   document.addEventListener('click', function (e) {
     var target = e.target;
     while (target && target !== document.body) {
@@ -852,9 +859,7 @@
     }
   });
 
-  // تشغيل التطبيق عند التحميل
   window.onload = function () {
-    document.getElementById('hijriDateDisplay').innerHTML = '18 جمادى الأولى 1448 هـ';
     refreshFocusList();
     fetchPrayerTimes();
     setInterval(updateClockAndCountdown, 1000);
